@@ -44,24 +44,30 @@ void postOrderTraversal(Node* root) {
     postOrderTraversal(root->right);
     cout << root->data << " ";
 }
+
 int main() {
     Node* root = nullptr;
-    int value, nodeCount;
-    cout << "How many nodes do you want to add? ";
-    cin >> nodeCount;
-    for (int i = 0; i < nodeCount; i++) {
-        cout << "Enter value for node " << i + 1 << ": ";
-        cin >> value;
-        root = insert(root, value);  // Update root
+
+    // Predefined array to construct the BST
+    int arr[] = {10, 3, 7, 1, 9, 15, 12};
+    int size = sizeof(arr) / sizeof(arr[0]);
+
+    // Insert elements into the BST
+    for (int i = 0; i < size; i++) {
+        root = insert(root, arr[i]);
     }
-    cout << "In-Order traversal: ";
+
+    cout << "In-Order traversal (Left, Root, Right): ";
     inOrderTraversal(root);
     cout << endl;
-    cout << "Pre-Order traversal: ";
+
+    cout << "Pre-Order traversal (Root, Left, Right): ";
     preOrderTraversal(root);
     cout << endl;
-    cout << "Post-Order traversal: ";
+
+    cout << "Post-Order traversal (Left, Right, Root): ";
     postOrderTraversal(root);
     cout << endl;
+
     return 0;
 }

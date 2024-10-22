@@ -1,40 +1,54 @@
-#include<iostream>
+#include <iostream>
 using namespace std;
-// linear search
-int linearsearch(int arr[], int size, int target)
-{
-    for(int i=0; i<size; i++)
-    {
-        if(arr[i]==target)
-        {
-            return i;
-        }
-    }
-    return -1;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+
+Node* createNode(int value) {
+    Node* newNode = new Node();
+    newNode->data = value;
+    newNode->left = newNode->right = nullptr;
+    return newNode;
 }
-int main()
-{
-    int arr[10];
-    int size;
-    cout<<"Enter the size of array : ";
-    cin>>size;
-    for(int i=0; i<size; i++)
-    {
-        cout<<"Enter the array element at index["<<i<<"] : ";
-        cin>>arr[i];
+
+Node* insert(Node* root, int value) {
+    if (root == nullptr) {
+        return createNode(value);
     }
-    size = sizeof(arr)/sizeof(arr[0]);
-    int target;
-    cout<<"Enter the search value : ";
-    cin>>target;
-    int result = linearsearch(arr,size,target);
-    if(result !=-1)
-    {
-        cout<<"Serach Found at index["<<result<<"]"<<endl;
+    if (value < root->data) {
+        root->left = insert(root->left, value);
+    } else if (value > root->data) {
+        root->right = insert(root->right, value);
     }
-    else
-    {
-        cout<<"Search Not Found"<<endl;
+    return root;
+}
+
+void inOrderTraversal(Node* root) {
+    if (root == nullptr) return;
+    inOrderTraversal(root->left);
+    cout << root->data << " ";
+    inOrderTraversal(root->right);
+}
+
+int main() {
+    Node* root = nullptr;
+    int value, nodeCount;
+
+    cout << "How many nodes do you want to add? ";
+    cin >> nodeCount;
+
+    for (int i = 0; i < nodeCount; i++) {
+        cout << "Enter value for node " << i + 1 << ": ";
+        cin >> value;
+        root = insert(root, value);  // Update the root with the returned tree
     }
+
+    cout << "In-Order traversal of the BST: ";
+    inOrderTraversal(root);
+    cout << endl;
+
     return 0;
 }

@@ -1,113 +1,67 @@
 #include <iostream>
 using namespace std;
 
-// Node structure for the circular linked list
 struct Node {
     int data;
-    Node* next;
+    Node* left;
+    Node* right;
 };
 
-// Function to insert a node at the end of the circular linked list
-void insertEnd(Node** head, int data) {
-    Node* newNode = new Node();
-    newNode->data = data;
-
-    if (*head == NULL) {
-        // If the list is empty, the new node points to itself and becomes the head
-        *head = newNode;
-        newNode->next = *head;
+// Function to insert a node into the BST
+Node* insert(Node* root, int value) {
+    if (root == nullptr) {
+        root = new Node();
+        root->data = value;
+        root->left = root->right = nullptr;
+    } else if (value < root->data) {
+        root->left = insert(root->left, value);
     } else {
-        // Traverse to the last node (which points to head)
-        Node* temp = *head;
-        while (temp->next != *head) {
-            temp = temp->next;
-        }
-        temp->next = newNode;
-        newNode->next = *head; // The new node points back to head, maintaining circular structure
+        root->right = insert(root->right, value);
     }
+    return root;
 }
 
-// Function to insert a node at the beginning of the circular linked list
-void insertBeginning(Node** head, int data) {
-    Node* newNode = new Node();
-    newNode->data = data;
-
-    if (*head == NULL) {
-        // If the list is empty, the new node points to itself and becomes the head
-        *head = newNode;
-        newNode->next = *head;
-    } else {
-        // If the list is not empty, find the last node
-        Node* temp = *head;
-        while (temp->next != *head) {
-            temp = temp->next;
-        }
-        // The new node's next points to the current head
-        newNode->next = *head;
-        // The last node now points to the new node
-        temp->next = newNode;
-        // Update head to the new node
-        *head = newNode;
-    }
+// In-order traversal (Left, Root, Right)
+void inOrderTraversal(Node* root) {
+    if (root == nullptr) return;
+    inOrderTraversal(root->left);
+    cout << root->data << " ";
+    inOrderTraversal(root->right);
 }
 
-// Function to traverse and print the elements of the circular linked list
-void traverseList(Node* head) {
-    if (head == NULL) {
-        cout << "List is empty." << endl;
-        return;
-    }
-
-    Node* temp = head;
-    // We use a do-while loop to ensure we print the first node's data before checking if we are back at the head
-    do {
-        cout << temp->data << " ";
-        temp = temp->next;
-    } while (temp != head);
-    cout << endl;
+// Pre-order traversal (Root, Left, Right)
+void preOrderTraversal(Node* root) {
+    if (root == nullptr) return;
+    cout << root->data << " ";
+    preOrderTraversal(root->left);
+    preOrderTraversal(root->right);
 }
 
-// Function to free up the memory of the circular linked list
-void deleteList(Node** head) {
-    if (*head == NULL)
-        return;
-
-    Node *current = *head, *nextNode;
-
-    do {
-        nextNode = current->next;
-        delete current;
-        current = nextNode;
-    } while (current != *head);
-
-    *head = NULL; // Set head to NULL after deletion
+// Post-order traversal (Left, Right, Root)
+void postOrderTraversal(Node* root) {
+    if (root == nullptr) return;
+    postOrderTraversal(root->left);
+    postOrderTraversal(root->right);
+    cout << root->data << " ";
 }
-
 int main() {
-    Node* head = NULL; // Initialize the head to NULL
-    int n, value;
-
-    // Take input from the user for number of nodes
-    cout << "Enter the number of nodes you want to insert at the end: ";
-    cin >> n;
-
-    // Insert each node into the circular linked list at the end
-    for (int i = 0; i < n; ++i) {
+    Node* root = nullptr;
+    int value, nodeCount;
+    cout << "How many nodes do you want to add? ";
+    cin >> nodeCount;
+    for (int i = 0; i < nodeCount; i++) {
         cout << "Enter value for node " << i + 1 << ": ";
         cin >> value;
-        insertEnd(&head, value);
+        root = insert(root, value);  // Update root
     }
-    // Traverse and print the circular linked list
-    cout << "Elements in the circular linked list after insertion at the end: ";
-    traverseList(head);
-    // Insert a node at the beginning
-    cout << "Enter value to insert at the beginning: ";
-    cin >> value;
-    insertBeginning(&head, value);
-    // Traverse and print the circular linked list after insertion at the beginning
-    cout << "Elements in the circular linked list after insertion at the beginning: ";
-    traverseList(head);
-    // Clean up memory after the program is done
-    deleteList(&head);
+    cout << "In-Order traversal: ";
+    inOrderTraversal(root);
+    cout << endl;
+    cout << "Pre-Order traversal: ";
+    preOrderTraversal(root);
+    cout << endl;
+    cout << "Post-Order traversal: ";
+    postOrderTraversal(root);
+    cout << endl;
     return 0;
 }

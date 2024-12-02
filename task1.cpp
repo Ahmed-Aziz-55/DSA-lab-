@@ -1,71 +1,97 @@
 #include <iostream>
 using namespace std;
-// Node structure for the circular linked list
+// Node structure
 struct Node {
-    int data;
-    Node* next;
+int data;
+Node* next;
 };
-// Function to insert a node at the end of the circular linked list
-void insertEnd(Node** head, int data) {
-    Node* newNode = new Node();
-    newNode->data = data;
-
-    if (*head == NULL) {
-        // If the list is empty, the new node points to itself and becomes the head
-        *head = newNode;
-        newNode->next = *head;
-    } else {
-        // Traverse to the last node (which points to head)
-        Node* temp = *head;
-        while (temp->next != *head) {
-            temp = temp->next;
-        }
-        temp->next = newNode;
-        newNode->next = *head; // The new node points back to head, maintaining circular structure
-    }
+// Function to insert a new node at the end of the list
+void insert(Node*& head, int data) {
+Node* newNode = new Node();
+newNode->data = data;
+newNode->next = nullptr;
+if (head == nullptr) {
+head = newNode;
+} else {
+Node* temp = head;
+while (temp->next != nullptr) {
+temp = temp->next;
 }
-// Function to traverse and print the elements of the circular linked list
-void traverseList(Node* head) {
-    if (head == NULL) {
-        cout << "List is empty." << endl;
-        return;
-    }
-    Node* temp = head;
-    // We use a do-while loop to ensure we print the first node's data before checking if we are back at the head
-    do {
-        cout << temp->data << " ";
-        temp = temp->next;
-    } while (temp != head);
-    cout << endl;
+temp->next = newNode;
 }
-// Function to free up the memory of the circular linked list
-void deleteList(Node** head) {
-    if (*head == NULL)
-        return;
-    Node *current = *head, *nextNode;
-    do {
-        nextNode = current->next;
-        delete current;
-        current = nextNode;
-    } while (current != *head);
-    *head = NULL; // Set head to NULL after deletion
+}
+// Function to delete a node with a specific value
+void deleteNode(Node*& head, int key) {
+if (head == nullptr) return;
+if (head->data == key) {
+Node* temp = head;
+head = head->next;
+delete temp;
+return;
+}
+Node* temp = head;
+while (temp->next != nullptr && temp->next->data != key) {
+temp = temp->next;
+}
+if (temp->next == nullptr) {
+cout << "Node with value " << key << " not found.\n";
+return;
+}
+Node* nodeToDelete = temp->next;
+temp->next = temp->next->next;
+delete nodeToDelete;
+}
+// Function to search for a node with a specific value
+bool search(Node* head, int key) {
+Node* temp = head;
+while (temp != nullptr) {
+if (temp->data == key) {
+return true;
+}
+temp = temp->next;
+}
+return false;
+}
+// Function to display the linked list
+void display(Node* head) {
+Node* temp = head;
+while (temp != nullptr) {
+cout << temp->data << " -> ";
+temp = temp->next;
+}
+cout << "NULL\n";
 }
 int main() {
-    Node* head = NULL; // Initialize the head to NULL
-    int n, value;
-    // Take input from the user for number of nodes
-    cout << "Enter the number of nodes you want to insert: ";
-    cin >> n;
-    // Insert each node into the circular linked list
-    for (int i = 0; i < n; ++i) {
-        cout << "Enter value for node " << i + 1 << ": ";
-        cin >> value;
-        insertEnd(&head, value);
-    }
-    // Traverse and print the circular linked list
-    cout << "Elements in the circular linked list: ";
-    traverseList(head);
-    // Clean up memory after the program is done
-    deleteList(&head);
-    return 0;
+    cout<<"Linked List revision"<<endl;
+Node* head = nullptr;
+int value;
+// Create linked list with 5 nodes
+cout << "Enter 5 values to create the linked list:\n";
+for (int i = 0; i < 5; i++) {
+cin >> value;
+insert(head, value);
+}
+cout << "Linked list after insertion: ";
+display(head);
+// Perform insertion
+cout << "\nEnter value to insert at the end: ";
+cin >> value;
+insert(head, value);
+cout << "Linked list after insertion: ";
+display(head);
+// Perform deletion
+cout << "\nEnter value to delete: ";
+cin >> value;
+deleteNode(head, value);
+cout << "Linked list after deletion: ";
+display(head);
+// Perform search
+cout << "\nEnter value to search: ";
+cin >> value;
+if (search(head, value)) {
+cout << "Value " << value << " found in the list.\n";
+} else {
+cout << "Value " << value << " not found in the list.\n";
+}
+return 0;
 }
